@@ -1,12 +1,11 @@
-const botao = document.getElementById('botao-search');
-const states = document.getElementById('status-search');
-const input = document.getElementById('input-search');
-const resultado = document.getElementById('resultado-card');
-const botaoCapturar = document.getElementById('capturar');
-const lista = document.getElementById('lista-capturados');
+const states = document.getElementById('status');
+const input = document.getElementById('input-buscar');
+const btnBuscar = document.getElementById('botao-buscar');
+const resultadoPokemonBuscado = document.getElementById('resultado-pokemon');
+const btnCapturar = document.getElementById('botao-capturar');
+const resultadoCapturados = document.getElementById('capturados');
 
-
-class Pokemon {
+class Pokemons {
     constructor(id, nome, tipo, sprite) {
         this.id = id;
         this.nome = nome;
@@ -16,73 +15,71 @@ class Pokemon {
 
     gerarCardHTML() {
         return `
-            <div class="cardPokemon">
+            <div>
                 <img src="${this.sprite}" alt="${this.nome}">
-                <span>${this.nome} - #${this.id}</span>
+                <p>#${this.id} - ${this.nome}</p>
+                <p>${this.tipo}</p>           
             </div>
+        
         `
     }
 }
 
-// ! Local Storage 
-let capturados = []
 let pokemonAtual = null;
+let capturados = [];
 
 const salvo = localStorage.getItem('capturados');
 if(salvo) {
     capturados = JSON.parse(salvo).map((p) => {
-        return new Pokemon(p.id, p.nome, p.tipo, p.sprite);
+        return new Pokemons(p.id, p.nome, p.tipo, p.sprite);
     });
     renderizar();
 }
 
-function capturarPokemon() {
+function capturar() {
+
+    if(!pokemonAtual) {
+        states.innerHTML = 'Nenhum pokemon buscado'
+        return
+    }
     capturados.push(pokemonAtual);
-
     localStorage.setItem('capturados', JSON.stringify(capturados));
-
     renderizar();
 }
-
-botaoCapturar.addEventListener('click', capturarPokemon);
 
 function renderizar() {
-    lista.innerHTML = "";
-
-    capturados.forEach((pokedoglas) => {
-        lista.innerHTML += pokedoglas.gerarCardHTML();
-    });
+    resultadoCapturados.innerHTML = "";
+    capturados.forEach((pokemon) => {
+        resultadoCapturados.innerHTML += pokemon.gerarCardHTML();
+    })
 }
 
-// ! FIM -> Local Storage 
-
+btnCapturar.addEventListener('click', capturar);
 
 async function buscarPokemon() {
     try {
         const termo = input.value.toLowerCase();
-        states.innerHTML = `Carregando seu pokémon, aguarde...`;
-
+        states.innerHTML = 'Buscando seu pokemon...'
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${termo}`);
-
-        if (!res.ok) {
-            throw new Error("Pokémon não buscado");
+        if(!res.ok) {
+            throw new Error('Ocorreu uma falha ao buscar o pokémon... Verfiique sua API');
         }
 
         const dados = await res.json();
 
-        pokemonAtual = new Pokemon(
+        pokemonAtual = new Pokemons(
             dados.id,
             dados.name,
             dados.types[0].type.name,
             dados.sprites.front_default
-        );
+        )
 
-        resultado.innerHTML = pokemonAtual.gerarCardHTML();
+        resultadoPokemonBuscado.innerHTML = pokemonAtual.gerarCardHTML();
+        states.innerHTML = "";
 
     } catch (error) {
-        states.innerHTML = error.message;
+        states.innerHTML = error.message;        
     }
 }
 
-botao.addEventListener('click', buscarPokemon);
-
+btnBuscar.addEventListener('click', buscarPokemon);
