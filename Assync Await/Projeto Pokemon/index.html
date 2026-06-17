@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedéx</title>
+</head>
+<body>
+    <header class="header-page">
+        <h1 class="h1-page">Buscando os PokeDôglas</h1>
+        <p class="p-page">Este é um projeto feito para a buscar um Pokémon através de uma API "PokeAPI."</p>
+    </header>
+
+    <main>
+        <section class="poke-search">
+            <div>
+                <h2>
+                    ENCONTRE SEU POKEDÉX!
+                </h2>
+
+                <label for="input-search">Busque pelo seu pokédex...</label>
+                <input id="input-search" type="text" required placeholder="Digite o nome ou id do pokémon">
+                <button id="botao-search">PokeBusca</button>
+            </div>
+
+            <div>
+                <h3 id="status-search"></h3>
+                <div id="resultado-card">
+                </div>
+            </div>
+
+            <button id="capturar">Capurar</button>
+        </section>
+
+        <section>
+            <h2>Capturados</h2>
+            <div id="lista-capturados"></div>
+        </section>
+
+
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
